@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import '../css/SpeechToText.css';
 
-const SpeechToText = ({setDreams, dreams}) => {
+const SpeechToText = ({ setDreams, dreams }) => {
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState('');
     const [dreamTitle, setDreamTitle] = useState('');
@@ -9,12 +9,14 @@ const SpeechToText = ({setDreams, dreams}) => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [isTypingMode, setIsTypingMode] = useState(false);
 
     useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         
         if (!SpeechRecognition) {
-            setError('Speech recognition is not supported in this browser.');
+            setError('Speech recognition is not supported in this browser. Please use the text input instead.');
+            setIsTypingMode(true);
             return;
         }
 
@@ -31,7 +33,13 @@ const SpeechToText = ({setDreams, dreams}) => {
 
         recognition.onerror = (event) => {
             console.error('Speech recognition error:', event.error);
-            setError(`Error: ${event.error}`);
+            if (event.error === 'network') {
+                setError('Speech recognition requires a secure connection (HTTPS). Please use the text input instead.');
+                setIsTypingMode(true);
+            } else {
+                setError(`Error: ${event.error}. Please use the text input instead.`);
+                setIsTypingMode(true);
+            }
             setIsListening(false);
         };
 
@@ -49,7 +57,6 @@ const SpeechToText = ({setDreams, dreams}) => {
 
         setIsLoading(true);
         try {
-            // const response = await fetch('http://127.0.0.1:8000/summarize', {
             const response = await fetch('https://dream-summarizer-backend.vercel.app/summarize', {
                 method: 'POST',
                 headers: {
@@ -76,7 +83,6 @@ const SpeechToText = ({setDreams, dreams}) => {
     const handleSaveDream = async () => {
         setIsSaving(true);
         try {
-            // const response = await fetch('http://127.0.0.1:8000/save-dream', {
             const response = await fetch('https://dream-summarizer-backend.vercel.app/save-dream', {
                 method: 'POST',
                 headers: {
@@ -125,12 +131,14 @@ const SpeechToText = ({setDreams, dreams}) => {
     return (
         <div className="speech-container">
             <div className="controls">
-                <button 
-                    onClick={() => setIsListening(!isListening)}
-                    className={isListening ? 'recording' : ''}
-                >
-                    {isListening ? '🔴 Stop Recording' : '🎤 Start Recording'}
-                </button>
+                {!isTypingMode && (
+                    <button 
+                        onClick={() => setIsListening(!isListening)}
+                        className={isListening ? 'recording' : ''}
+                    >
+                        {isListening ? '🔴 Stop Recording' : '🎤 Start Recording'}
+                    </button>
+                )}
 
                 <button 
                     onClick={handleSummarize}
@@ -145,6 +153,13 @@ const SpeechToText = ({setDreams, dreams}) => {
                 >
                     🗑️ Clear
                 </button>
+
+                <button
+                    onClick={() => setIsTypingMode(!isTypingMode)}
+                    className="mode-toggle"
+                >
+                    {isTypingMode ? '🎤 Switch to Voice' : '⌨️ Switch to Typing'}
+                </button>
             </div>
 
             {error && (
@@ -155,9 +170,18 @@ const SpeechToText = ({setDreams, dreams}) => {
 
             <div className="transcript-section">
                 <h3>Your Dream:</h3>
-                <div className="transcript">
-                    {transcript || 'Start speaking to record your dream...'}
-                </div>
+                {isTypingMode ? (
+                    <textarea
+                        value={transcript}
+                        onChange={(e) => setTranscript(e.target.value)}
+                        placeholder="Type your dream here..."
+                        className="dream-input"
+                    />
+                ) : (
+                    <div className="transcript">
+                        {transcript || 'Start speaking to record your dream...'}
+                    </div>
+                )}
             </div>
 
             {(dreamTitle || dreamSummary) && (
