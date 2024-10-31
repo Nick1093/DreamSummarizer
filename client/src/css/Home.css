@@ -1,0 +1,54 @@
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to right, #4a90e2, #357abd);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.app-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.home-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    margin-top: 60px; /* Same as header height */
+}
+
+.dreams-sidebar {
+    width: 300px;
+    min-width: 300px;
+    height: calc(100vh - 60px); /* Subtract header height */
+    overflow-y: auto;
+    border-right: 1px solid #ddd;
+    background-color: #f8f9fa;
+    position: fixed;
+    left: 0;
+    top: 60px; /* Same as header height */
+}
+
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    margin-left: 300px; /* Same as sidebar width */
+    min-height: calc(100vh - 60px); /* Subtract header height */
+    background-color: white;
+}
