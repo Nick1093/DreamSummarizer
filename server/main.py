@@ -126,3 +126,8 @@ async def get_dreams():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch dreams: {str(e)}")
+
+
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(app)
