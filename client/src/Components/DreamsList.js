@@ -1,14 +1,17 @@
 import '../css/DreamsList.css';
 
 const DreamsList = ({ dreams }) => {
+    // Add a default value if dreams is undefined
+    const dreamsList = dreams || [];
+
     return (
         <div className="dreams-list">
             <h2>Dream Journal</h2>
-            {dreams.length === 0 ? (
+            {!dreamsList.length ? (
                 <p>No dreams recorded yet.</p>
             ) : (
                 <ul>
-                    {dreams.map((dream) => (
+                    {dreamsList.map((dream) => (
                         <li key={dream.id} className="dream-item">
                             <h3>{dream.title}</h3>
                             <p>{dream.summary}</p>

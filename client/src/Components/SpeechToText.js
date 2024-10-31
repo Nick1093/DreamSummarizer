@@ -49,7 +49,8 @@ const SpeechToText = ({setDreams, dreams}) => {
 
         setIsLoading(true);
         try {
-            const response = await fetch('http://127.0.0.1:8000/summarize', {
+            // const response = await fetch('http://127.0.0.1:8000/summarize', {
+            const response = await fetch('https://dream-summarizer-backend.vercel.app/summarize', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -75,7 +76,8 @@ const SpeechToText = ({setDreams, dreams}) => {
     const handleSaveDream = async () => {
         setIsSaving(true);
         try {
-            const response = await fetch('http://127.0.0.1:8000/save-dream', {
+            // const response = await fetch('http://127.0.0.1:8000/save-dream', {
+            const response = await fetch('https://dream-summarizer-backend.vercel.app/save-dream', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
