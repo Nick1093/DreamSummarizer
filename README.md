@@ -2,6 +2,7 @@
 never forget a dream ☁️
 powered by OpenAI
 
+
 -> voice record your dream
 
 -> ai will summarize your story
@@ -10,7 +11,10 @@ powered by OpenAI
 
 -> see your friends' dreams
 
+
 possible future implementations 🌠
 
 -> ai image generation for your dreams
+
+-> ai dream interpretation
 
