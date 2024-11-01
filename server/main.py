@@ -40,7 +40,7 @@ firebase_credentials = {
     "type": "service_account",  # This is usually always "service_account"
     "project_id": os.getenv("PROJECT_ID"),
     "private_key_id": os.getenv("PRIVATE_KEY_ID"),
-    "private_key": os.getenv('PRIVATE_KEY').replace('\\n', '\n'),
+    "private_key": os.getenv('PRIVATE_KEY'),
     "client_email": os.getenv("CLIENT_EMAIL"),
     "client_id": os.getenv("CLIENT_ID"),
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",  # These are standard URLs
@@ -151,7 +151,6 @@ async def get_dreams():
                 dream_data['created_at'] = dream_data['created_at'].strftime("%Y-%m-%d %H:%M:%S")
             dreams.append(dream_data)
         
-        print("We got here")
         return {
             "status": "success",
             "dreams": dreams,
