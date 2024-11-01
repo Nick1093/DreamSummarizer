@@ -51,6 +51,14 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 client = instructor.from_openai(OpenAI())
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
+
 
 # Configure CORS (keeping existing configuration)
 app.add_middleware(
