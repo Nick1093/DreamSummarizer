@@ -51,24 +51,23 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 client = instructor.from_openai(OpenAI())
 
 app = FastAPI()
+# Define allowed origins
+origins = [
+    "http://localhost:3000",
+    "https://dream-summarizer.vercel.app",
+    "https://dream-summarizer-backend.vercel.app"
+]
+
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,
 )
-
-
-# Configure CORS (keeping existing configuration)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 class Transcript(BaseModel):
     text: str
 
