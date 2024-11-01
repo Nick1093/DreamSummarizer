@@ -11,7 +11,8 @@ from datetime import datetime, timezone
 
 # configuring database
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import credentials, firestore, initialize_app
+import uvicorn
 
 load_dotenv()
 
@@ -30,9 +31,9 @@ firebase_credentials = {
     "universe_domain": os.getenv("UNIVERSE_DOMAIN")
 }
 
-cred = credentials.Certificate("./serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
-
+# Initialize Firebase using the dictionary directly
+cred = credentials.Certificate(firebase_credentials)
+initialize_app(cred)
 db = firestore.client()
 
 # Define your desired output structure
@@ -142,5 +143,4 @@ async def get_dreams():
 
 
 if __name__ == '__main__':
-    import uvicorn
     uvicorn.run(app)
