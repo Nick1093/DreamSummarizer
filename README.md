@@ -9,3 +9,8 @@ powered by OpenAI
 -> save your dreams to the journal
 
 -> see your friends' dreams
+
+possible future implementations 🌠
+
+-> ai image generation for your dreams
+
