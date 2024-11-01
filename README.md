@@ -16,3 +16,5 @@ possible future implementations 🌠
 
 -> ai image generation for your dreams
 
+-> ai dream interpretation
+
