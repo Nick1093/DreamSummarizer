@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import '../css/DreamsList.css';
+import DreamModal from './DreamModal';
 
 const DreamsList = ({ dreams }) => {
-    // Add a default value if dreams is undefined
+    const [selectedDream, setSelectedDream] = useState(null);
     const dreamsList = dreams || [];
 
     return (
@@ -12,7 +14,11 @@ const DreamsList = ({ dreams }) => {
             ) : (
                 <ul>
                     {dreamsList.map((dream) => (
-                        <li key={dream.id} className="dream-item">
+                        <li 
+                            key={dream.id} 
+                            className="dream-item"
+                            onClick={() => setSelectedDream(dream)}
+                        >
                             <h3>{dream.title}</h3>
                             <p>{dream.summary}</p>
                             <span className="dream-date">
@@ -21,6 +27,13 @@ const DreamsList = ({ dreams }) => {
                         </li>
                     ))}
                 </ul>
+            )}
+            
+            {selectedDream && (
+                <DreamModal 
+                    dream={selectedDream} 
+                    onClose={() => setSelectedDream(null)}
+                />
             )}
         </div>
     );
