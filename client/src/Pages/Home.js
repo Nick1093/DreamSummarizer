@@ -5,24 +5,28 @@ import '../css/Home.css';
 
 const Home = () => {
     const [dreams, setDreams] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        fetchDreams();
-    }, []);
-
-    const fetchDreams = async () => {
-        try {
-            // const response = await fetch('http://127.0.0.1:8000/get-dreams');
-            const response = await fetch('https://dream-summarizer-backend.vercel.app/get-dreams');
-            if (!response.ok) {
-                throw new Error('Failed to fetch dreams');
+        const fetchDreams = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/get-dreams', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                if (!response.ok) throw new Error('Failed to fetch dreams');
+                const data = await response.json();
+                setDreams(data.dreams);
+            } catch (err) {
+                console.error('Failed to fetch dreams:', err);
+            } finally {
+                setIsLoading(false);
             }
-            const data = await response.json();
-            setDreams(data.dreams);
-        } catch (err) {
-            console.error('Failed to fetch dreams:', err);
-        }
-    };
+        };
+
+        fetchDreams();
+    }, []); // Empty dependency array means this only runs once on mount
 
     return (
         <div className="app-container">
@@ -31,7 +35,11 @@ const Home = () => {
             </header>
             <div className="home-layout">
                 <div className="dreams-sidebar">
-                    <DreamsList dreams={dreams} />
+                    {isLoading ? (
+                        <p>Loading dreams...</p>
+                    ) : (
+                        <DreamsList dreams={dreams} />
+                    )}
                 </div>
                 <div className="main-content">
                     <SpeechToText setDreams={setDreams} dreams={dreams} />
