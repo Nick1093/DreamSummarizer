@@ -42,3 +42,8 @@ __pycache__/
 *$py.class
 venv/
 env/
+
+# Firebase credentials
+serviceAccountKey.json
+**/serviceAccountKey.json
+server/serviceAccountKey.json
