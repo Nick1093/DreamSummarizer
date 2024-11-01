@@ -10,10 +10,13 @@ const Home = () => {
     useEffect(() => {
         const fetchDreams = async () => {
             try {
-                const response = await fetch('http://localhost:8000/get-dreams', {
+                // const response = await fetch('http://localhost:8000/get-dreams', {
+                const response = await fetch('https://dream-summarizer-backend.vercel.app/get-dreams', {
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                    }
+                    },
+                    mode: 'cors'
                 });
                 if (!response.ok) throw new Error('Failed to fetch dreams');
                 const data = await response.json();

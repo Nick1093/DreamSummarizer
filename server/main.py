@@ -12,23 +12,42 @@ from datetime import datetime, timezone
 # configuring database
 import firebase_admin
 from firebase_admin import credentials, firestore, initialize_app
-import uvicorn
 
+# Load environment variables
 load_dotenv()
+
+# Initialize FastAPI app
+app = FastAPI()
+
+# Configure CORS
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://dream-summarizer.vercel.app",
+    "https://dream-summarizer-backend.vercel.app"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Configure Firebase using environment variables
 firebase_credentials = {
-    "type": os.getenv("TYPE"),
+    "type": "service_account",  # This is usually always "service_account"
     "project_id": os.getenv("PROJECT_ID"),
     "private_key_id": os.getenv("PRIVATE_KEY_ID"),
-    "private_key": os.getenv("PRIVATE_KEY").replace("\\n", "\n"),  # format private key
+    "private_key": os.getenv('PRIVATE_KEY').replace('\\n', '\n'),
     "client_email": os.getenv("CLIENT_EMAIL"),
     "client_id": os.getenv("CLIENT_ID"),
-    "auth_uri": os.getenv("AUTH_URI"),
-    "token_uri": os.getenv("TOKEN_URI"),
-    "auth_provider_x509_cert_url": os.getenv("AUTH_PROVIDER_X509_CERT_URL"),
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",  # These are standard URLs
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_x509_cert_url": os.getenv("CLIENT_X509_CERT_URL"),
-    "universe_domain": os.getenv("UNIVERSE_DOMAIN")
+    "universe_domain": "googleapis.com"  # This is usually standard
 }
 
 # Initialize Firebase using the dictionary directly
@@ -50,30 +69,22 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Patch the OpenAI client
 client = instructor.from_openai(OpenAI())
 
-app = FastAPI()
-# Define allowed origins
-origins = [
-    "http://localhost:3000",
-    "https://dream-summarizer.vercel.app",
-    "https://dream-summarizer-backend.vercel.app"
-]
-
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
-    expose_headers=["*"],
-    max_age=3600,
-)
 class Transcript(BaseModel):
     text: str
 
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Dream Interpreter API!"}
+
+@app.get("/test-firebase")
+async def test_firebase():
+    try:
+        # Try a simple query
+        docs = db.collection('dreams').limit(1).stream()
+        return {"status": "Firebase connection successful"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Firebase connection failed: {str(e)}")
+
 
 @app.post("/summarize")
 async def summarize_dream(transcript: Transcript):
@@ -140,6 +151,7 @@ async def get_dreams():
                 dream_data['created_at'] = dream_data['created_at'].strftime("%Y-%m-%d %H:%M:%S")
             dreams.append(dream_data)
         
+        print("We got here")
         return {
             "status": "success",
             "dreams": dreams,
@@ -149,5 +161,5 @@ async def get_dreams():
         raise HTTPException(status_code=500, detail=f"Failed to fetch dreams: {str(e)}")
 
 
-if __name__ == '__main__':
-    uvicorn.run(app)
+# if __name__ == '__main__':
+#     uvicorn.run(app)
