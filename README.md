@@ -3,7 +3,7 @@ never forget a dream ☁️
 powered by OpenAI
 
 
--> voice record your dream
+-> voice record your dream 💭
 
 -> ai will summarize your story
 
